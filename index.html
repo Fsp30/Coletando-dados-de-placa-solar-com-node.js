@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento de Painel Solar</title>
+
+
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            transition: background-color 0.3s ease;
+        }
+
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+
+        .cards-principais {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+   
+        .card-bateria{
+            background-color: #fff;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 8px rgba(255, 255, 0);
+            border-radius: 2px;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+
+        .card-placa{
+            background-color: #fff;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 8px rgb(255, 255, 0);
+            border-radius: 2px;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+
+        .card {
+            position: relative;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            overflow: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            z-index: 1; /* Garante que o conteúdo do card fique acima da animação */
+        }
+
+
+        .card h2 {
+            margin: 0 0 10px;
+            font-size: 20px;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+
+        .card p {
+            margin: 0;
+            font-size: 16px;
+            color: #555;
+            transition: color 0.3s ease;
+            position: relative;
+            z-index: 2; /* Garante que o texto esteja acima da animação */
+        }
+
+
+        /* Animação da borda para os cards principais */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                yellow, yellowgreen, lightgreen
+            );
+            animation: rotate 3s alternate-reverse infinite;
+            z-index: 0;
+            border-radius: 50%;
+        }
+
+
+        .card:nth-child(2)::before {
+            background: conic-gradient(orange, orange);
+        }
+       
+        .card:nth-child(3)::before {
+        background: conic-gradient(yellow, yellow);
+        }
+
+
+        .card:nth-child(4)::before {
+            background: conic-gradient(rgb(255, 0, 0), rgb(255, 0, 0));
+        }
+
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            background-color: #ffffff;
+            z-index: 1;
+            border-radius: 10px;
+        }
+
+
+        /* Animação de rotação */
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        /* Botão de Modo Noturno */
+        .toggle-button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+
+        .toggle-button:hover {
+            background-color: #555;
+        }
+
+
+        /* Estilo para Modo Noturno */
+        body.dark-mode {
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+
+
+        body.dark-mode .card {
+            background-color: #333;
+        }
+
+
+        body.dark-mode .card-bateria {
+            background-color: #333;
+            color: #fff;
+        }
+
+
+        body.dark-mode .card-placa {
+            background-color: #333;
+            color: #fff;
+        }
+
+
+        body.dark-mode .card h2,
+        body.dark-mode .card p {
+            color: #333;
+        }
+
+
+        body.dark-mode .toggle-button {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+
+        body.dark-mode .toggle-button:hover {
+            background-color: #ddd;
+        }
+        .qr-code {
+            position: absolute; /* Mudança para absolute */
+            bottom: 10px;
+            right: 10px;
+            width: 100px;
+            height: 100px;
+            border: 2px solid #000;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="container">
+    <button class="toggle-button" onclick="toggleDarkMode()">Modo Noturno</button>
+    <h1>Controle de Placa Solar</h1>
+    <div class="cards-principais">
+        <div class="card-bateria">
+            <h2>Bateria</h2>
+            <div class="card">
+                <h2>Tensão Canal 2</h2>
+                <p id="volt2">-- V</p>
+            </div>
+            <div class="card">
+                <h2>Corrente Canal 2</h2>
+                <p id="current_mA2">-- A</p>
+            </div>
+            <div class="card">
+                <h2>Potência Canal 2</h2>
+                <p id="power2">-- W</p>
+            </div>
+        </div>
+        <div class="card-placa">
+            <h2>Placa</h2>
+            <div class="card">
+                <h2>Tensão Canal 3</h2>
+                <p id="volt3">-- V</p>
+            </div>
+            
+            <div class="card">
+                <h2>Potência Canal 3</h2>
+                <p id="power3">-- W</p>
+            </div>
+    </div>
+    </div>
+</div>
+<div class="qr-code">
+    <img src="/qrcode" alt="QR Code">
+</div>
+<script>
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+    }
+
+
+    // Função para atualizar os dados na interface
+    function updateData() {
+        fetch('/api/data')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('volt2').textContent = `${data.volt2} V`;
+                document.getElementById('current_mA2').textContent = `${data.current_mA2} A`;
+                document.getElementById('power2').textContent = `${data.power2} W`;
+
+
+                document.getElementById('volt3').textContent = `${data.volt3} V`;
+                document.getElementById('current_mA3').textContent = `${data.current_mA3} A`;
+                document.getElementById('power3').textContent = `${data.power3} W`;
+                console.log('Dados recebidos:');
+                console.log(`Canal 2 - Tensão: ${data.volt2} V, Corrente: ${data.current_mA2} A, Potência: ${data.power2} W`);
+                console.log(`Canal 3 - Tensão: ${data.volt3} V, Corrente: ${data.current_mA3} A, Potência: ${data.power3} W`);
+            })
+            .catch(error => console.error('Erro ao obter dados:', error));
+    }
+
+
+    // Atualiza os dados a cada 5 segundos
+    setInterval(updateData, 5000);
+</script>
+
+
+</body>
+</html>
+
+
+
