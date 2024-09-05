@@ -1,0 +1,1 @@
+Nessa aplicação desenvolvida coletamos dados como: tensão, corrente e potência de uma bateria, e tensão e potência de uma placa solar. Como foi utilizado a ferramenta node.js para a coleta desses dados também foi incluido um qrcode com o ip do host e a porta, para que aqueles que estejam na mesma rede tenham acesso rápido a aplicação.
