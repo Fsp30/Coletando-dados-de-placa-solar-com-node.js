@@ -264,8 +264,7 @@
         document.body.classList.toggle('dark-mode');
     }
 
-
-    // Função para atualizar os dados na interface
+
     function updateData() {
         fetch('/api/data')
             .then(response => response.json())
@@ -285,8 +284,7 @@
             .catch(error => console.error('Erro ao obter dados:', error));
     }
 
-
-    // Atualiza os dados a cada 5 segundos
+
     setInterval(updateData, 5000);
 </script>
 
