@@ -3,7 +3,7 @@ const mqtt = require('mqtt');
 const express = require('express');
 const fs = require('fs');
 const qrcode = require('qrcode');
-const os = require('os'); // Novo: Importando o módulo os para obter o IP local
+const os = require('os'); 
 
 
 function getLocalIP() {
